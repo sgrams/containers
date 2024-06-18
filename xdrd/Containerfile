@@ -1,5 +1,10 @@
 FROM alpine:latest
 
+ENV XDRD_DEVICE_PATH="/dev/ttyUSB0"
+ENV XDRD_PORT=7373
+ENV XDRD_MAX_USERS=10
+ENV XDRD_PASSWORD="overrideme"
+
 RUN adduser -D xdrd
 RUN apk add bash git gcc musl-dev libssl3 make openssl openssl-dev
 
@@ -7,12 +12,9 @@ USER xdrd
 RUN cd ~ && git clone https://github.com/kkonradpl/xdrd.git && \
     cd xdrd && make && chmod +x xdrd
 
-ENV XDRD_DEVICE_PATH="/dev/xdrd_device0"
-ENV XDRD_PORT=7373
-ENV XDRD_MAX_USERS=10
-ENV XDRD_PASSWORD="overrideme"
-
 EXPOSE $XDRD_PORT
 
 WORKDIR /home/xdrd/xdrd/
+
+USER xdrd
 CMD ["/bin/bash", "-c", "./xdrd -s ${XDRD_DEVICE_PATH} -t ${XDRD_PORT} -u ${XDRD_MAX_USERS} -p ${XDRD_PASSWORD}"]
