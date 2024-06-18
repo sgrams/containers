@@ -1,0 +1,11 @@
+services:
+  xdrd:
+    image: xdrd:latest
+    container_name: xdrd
+    ports:
+      - "${XDRD_PORT:-7373}:7373"
+    environment:
+      - XDRD_PASSWORD=overrideme
+    restart: always
+    devices:
+      - /dev/ttyUSB0:/dev/xdr_device0
